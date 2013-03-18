@@ -66,18 +66,19 @@ module Formtastic
         builder.hidden_field("retained_#{method}")
       end
 
+      def is_image?(file)
+        file.mime_type =~ /png|bmp|gif|tif|jpe?g/
+      end
+
       def fragment_preview_html
-        begin
-          image = object.send(method)
-          if image.present?
-            if image.image?
-              original_url = object.send(method).url
-              preview_size = input_html_options[:preview_size] || "72x72#"
-              preview_url = object.send(method).thumb(preview_size).url
-              fragment_label_html(:preview) << template.link_to(template.image_tag(preview_url), original_url)
-            else
-              fragment_download_html
-            end
+		begin
+        file = object.send(method)
+        if file.present?
+          if is_image?(file)
+            original_url = object.send(method).url
+            preview_size = input_html_options[:preview_size] || [ 75, 75 ]
+            preview_url = object.send(method).thumb("#{preview_size.first}x#{preview_size.last}#").url
+            fragment_label_html(:preview) << template.link_to(template.image_tag(preview_url), original_url)
           else
             fragment_label_html(:preview) << "<div class='no-image'>#{I18n.t("dragonfly.no_image")}</div>".html_safe
           end
