@@ -71,16 +71,17 @@ module Formtastic
       end
 
       def fragment_preview_html
-		begin
-        file = object.send(method)
-        if file.present?
-          if is_image?(file)
-            original_url = object.send(method).url
-            preview_size = input_html_options[:preview_size] || [ 75, 75 ]
-            preview_url = object.send(method).thumb("#{preview_size.first}x#{preview_size.last}#").url
-            fragment_label_html(:preview) << template.link_to(template.image_tag(preview_url), original_url)
-          else
-            fragment_label_html(:preview) << "<div class='no-image'>#{I18n.t("dragonfly.no_image")}</div>".html_safe
+		    begin
+          file = object.send(method)
+          if file.present?
+            if is_image?(file)
+              original_url = object.send(method).url
+              preview_size = input_html_options[:preview_size] || [ 75, 75 ]
+              preview_url = object.send(method).thumb("#{preview_size.first}x#{preview_size.last}#").url
+              fragment_label_html(:preview) << template.link_to(template.image_tag(preview_url), original_url)
+            else
+              fragment_label_html(:preview) << "<div class='no-image'>#{I18n.t("dragonfly.no_image")}</div>".html_safe
+            end
           end
         rescue 
           fragment_label_html(:preview) << "<div class='no-image'>#{I18n.t("dragonfly.no_image")}</div>".html_safe
